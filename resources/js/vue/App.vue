@@ -1,8 +1,7 @@
 <template>
   <div>
-      <Nav />
-      <button >kl</button>
-    <router-view />
+        <Nav />
+        <router-view />
   </div>
 </template>
 <script>
@@ -26,11 +25,11 @@ export default {
     methods:{
 
     },
-    async created() {
-        const response = await axios.get('api/user')
-        this.$store.dispatch('user', response.data);
-        //console.log(response.data)
-    },
+    // async created() {
+    //     const response = await axios.get('api/user')
+    //     this.$store.dispatch('user', response.data);
+
+    // },
 
 };
 </script>

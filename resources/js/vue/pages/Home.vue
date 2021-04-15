@@ -2,7 +2,6 @@
     <div class="row justify-content-center mt-4">
         <div class="col-4">
                 Home
-                <button @click="k">kl</button>
         </div>
     </div>
 </template>
@@ -24,10 +23,7 @@ export default {
         }
     },
     methods:{
-        k(){
-            console.log(localStorage.getItem('token'))
-            console.log(this.$store.getters.user)
-        }
+
     }
 }
 </script>

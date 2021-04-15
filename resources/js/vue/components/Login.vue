@@ -45,13 +45,16 @@ export default {
 
                 this.$store.dispatch('user', res.data.user);
                 this.inlogged = true;
-                this.$router.push('/dashboard');
+                this.$router.push('/dashboard');               
               }).catch(err=>{
                   console.log(err);
               });
         });
       }
-  }
+  },
+  created() {
+   
+  },
 
 };
 </script>
