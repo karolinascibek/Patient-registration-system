@@ -23,12 +23,12 @@
 </template>
 
 <script>
+
 export default {
   name: "Login",
   data() {
     return {
       message: "Log in",
-      inlogged: localStorage.getItem('inlogged'),
       form:{
           email:"",
           password:"",
@@ -38,14 +38,16 @@ export default {
   },
   methods:{
       userLogin(){
+
           axios.get('/sanctum/csrf-cookie').then(response => {
               axios.post('api/login', this.form).then(res =>{
+
                 localStorage.setItem('token', res.data.token);
-                localStorage.setItem('inlogged', 'true');
+                axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+
 
                 this.$store.dispatch('user', res.data.user);
-                this.inlogged = true;
-                this.$router.push('/dashboard');               
+                this.$router.push('/dashboard');
               }).catch(err=>{
                   console.log(err);
               });
@@ -53,7 +55,7 @@ export default {
       }
   },
   created() {
-   
+
   },
 
 };

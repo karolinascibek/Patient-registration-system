@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="border-bottom">
     <ul class="nav justify-content-end py-3">
       <!-- <li class="border-right nav-item ">
                 <router-link :to="{name:'home'}" class="nav-link btn btn-link">Home</router-link>
@@ -30,8 +30,8 @@
 </template>
 
 <script>
-import axios from "axios";
 import { mapGetters } from "vuex";
+import BASE_URL from '../../axios';
 
 export default {
   name: "Nav",
@@ -44,24 +44,21 @@ export default {
   },
   methods: {
     handelClick() {
-      console.log(localStorage.getItem("token"));
       axios
-        .post("api/logout", {})
+        .post(BASE_URL+"api/logout", {})
         .then((res) => {
           localStorage.removeItem("token");
           this.$store.dispatch("user", null);
+
           this.$router.push("/login");
         })
         .catch((err) => {
           console.log(err);
         });
     },
-  },
-  created() {
-    if (localStorage.getItem("token")) {
-      console.log("nav");
-      console.log(localStorage.getItem("token"));
-    }
+
+    created() {
+    },
   },
 };
 </script>

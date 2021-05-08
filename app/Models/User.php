@@ -17,7 +17,11 @@ class User extends Authenticatable
      *
      * @var array
      */
+
+    protected $table = "users";
+
     protected $fillable = [
+        'id',
         'last_name',
         'name',
         'email',
@@ -42,4 +46,16 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function myCalendars()
+    {
+        return $this->hasMany(Calendar::class, "user_id", "id");
+    }
+
+    public function calendars(){
+        return  $this->hasMany(UserCalendar::class, "user_id", "id")
+                        ->join('calendars','calendars.id' ,'=', 'user_calendars.calendar_id')
+                        ->where('calendars.user_id',"!=", $this->id);
+    }
+
 }

@@ -31,6 +31,7 @@ class RegisterController extends Controller
                 ]);
             }
 
+
             $request['remember_token'] = Str::random(10);
             $newUser = new User;
             $newUser->create([
