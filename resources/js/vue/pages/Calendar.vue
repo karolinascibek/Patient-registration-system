@@ -1,9 +1,8 @@
 <template>
-  <div class="py-2 px-4 ">
-    <Header :calendar="calendar" :owner='owner' />
-    <AddEvent />
-    <Calendar  />
-
+  <div class="py-2 px-4">
+    <Header :calendar="calendar" :owner="owner"  />
+    <AddEvent @clicked="getMessage"  />
+    <Calendar :isAddEvent="isAddEvent" />
   </div>
 </template>
 
@@ -16,23 +15,28 @@ import AddEvent from "../components/calendar/AddEvent";
 export default {
   name: "calendar",
   props: ["id"],
-  components:{
-      Header,
-      Calendar,
-      AddEvent,
+  components: {
+    Header,
+    Calendar,
+    AddEvent,
   },
   data() {
     return {
       calendar: [],
       owner: [],
-      eventsCalendar:['hellow'],
-
+      eventsCalendar: ["hellow"],
+      isAddEvent:false,
     };
   },
   methods: {
+    getMessage(value) {
+        console.log("Odebraba 1 CAlendar Page")
+        this.isAddEvent = value;
+        console.log(value)
+    },
     getCalendar() {
       axios
-        .get(BASE_URL + "api/calendar/"+this.$route.params.id)
+        .get(BASE_URL + "api/calendar/" + this.$route.params.id)
         .then((resp) => {
           this.calendar = resp.data.calendar;
           this.owner = resp.data.owner;
@@ -41,6 +45,8 @@ export default {
           consol.log(err);
         });
     },
+  },
+  updated(){
   },
   created() {
     this.getCalendar();

@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\UserCalendarController;
+use App\Http\Controllers\CalendarEventController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,4 +31,9 @@ Route::get('calendars', [CalendarController::class, 'index'])->middleware("auth:
 Route::post('calendar/create', [CalendarController::class, 'create'])->middleware("auth:sanctum");
 Route::post('calendar/add', [UserCalendarController::class, 'create'])->middleware("auth:sanctum");
 Route::get('calendar/{id}', [CalendarController::class, 'show'])->middleware("auth:sanctum");
+
+Route::post('calendar/{id}/event/create', [CalendarEventController::class, 'create'])->middleware("auth:sanctum");
+Route::post('calendar/{id}/events-for-day',[CalendarEventController::class, 'showDayEvents'])->middleware("auth:sanctum");
+Route::post('calendar/{id}/events',[CalendarEventController::class, 'showEventsForWeek'])->middleware("auth:sanctum");
+
 

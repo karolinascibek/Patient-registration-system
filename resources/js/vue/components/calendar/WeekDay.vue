@@ -1,48 +1,55 @@
 <template>
   <div class="">
-
-    <div v-bind:class="{ active: iscurrentDay, 'text-success': iscurrentDay,}">
-      <h4 v-if="!currentDate" class='px-0'>{{ setDate(date, index) }} </h4>
-      <h4 v-else class='px-0'>{{ setDate(currentDate, index) }}  </h4>
-      <h5>{{setWeekDay(indexWeekDays)}}</h5>
+    <div v-bind:class="{ active: iscurrentDay, 'text-success': iscurrentDay }">
+      <h4  class="px-0">{{ currentDate.getDate() }}</h4>
+      <h5>{{ setWeekDay(index) }}</h5>
     </div>
 
-    <div v-for="i in 4" :key="i">
-      <EventCalendar />
+    <div v-for="(event, i) in events" :key="i">
+      <EventCalendar v-if="isSentEvents(event)" :currentDate="currentDate" :event="event" />
     </div>
-
   </div>
 </template>
 
 <script>
 import EventCalendar from "./EventCalendar";
+import BASE_URL from "../../axios";
 
 export default {
   name: "week-day",
   components: {
     EventCalendar,
   },
-  props: [ "index", "currentDate"],
+  props: ["index", "currentDate", "isAddEvent", "events"],
   data() {
     return {
-      day: null,
+      weekday: null,
       date: this.currentDate,
 
+      reloadEvent: this.isAddEvent,
+
       currentWeekDay: null,
-      indexWeekDays: null,
       iscurrentDay: false,
       weekdays: ["Nd", "Pon", "Wt", "Sr", "Cz", "Pt", "So"],
     };
   },
   methods: {
+    isSentEvents(event){
+        let newDate = new Date(event.date);
+        newDate = this.getDate(newDate);
+        let c_date = this.getDate(this.currentDate);
+        if(newDate.year == c_date.year && newDate.month == c_date.month && newDate.day == c_date.day){
+            return true;
+        }
+        return false;
+    },
     setDate(date, value) {
-      let newDate = new Date(
-        date.getFullYear(),
-        date.getMonth(),
-        date.getDate() + value
-      );
-      this.indexWeekDays = newDate.getDay();
-      return newDate.getDate();
+      let newDate = this.addDay(date, value);
+      return newDate;
+    },
+    addDay(date, value) {
+      let d = new Date(date.getFullYear(), date.getMonth(), date.getDate() + value);
+      return d;
     },
     setWeekDay(index) {
       return this.weekdays[index];
@@ -55,18 +62,16 @@ export default {
       return { year: y, month: m, day: d };
     },
     checkCurentDay() {
-      let d = this.getDate(this.date);
+      let d = this.getDate(this.currentDate);
       let now = new Date(Date.now());
       let dn = this.getDate(now);
+      console.log("nasz dzień" + this.weekday +" == "+this.index);
       if (
-        this.index == this.currentWeekDay &&
+        this.index == 0 &&
         d.year == dn.year &&
         d.month == dn.month &&
         d.day == dn.day
-
       ) {
-          console.log("nasz dzień"+this.date)
-
         this.iscurrentDay = true;
       } else {
         this.iscurrentDay = false;
@@ -74,19 +79,21 @@ export default {
     },
     setCurrentDate(newDate) {
       this.date = newDate;
-      this.day = newDate.getDate();
     },
   },
   updated() {
-    if (this.date != null) {
-      this.setCurrentDate(this.currentDate);
-    }
+    this.date = this.currentDate
     this.checkCurentDay();
+    //let newdate = this.addDay(this.currentDate, this.index);
+    //this.getEventsForDay(newdate);
+    console.log(this.isAddEvent + "metod update new Add ewent");
   },
   created() {
-    this.setCurrentDate(new Date(Date.now()));
+    this.setCurrentDate(this.currentDate);
+    this.weekday = this.currentDate.getDay();
     this.currentWeekDay = this.date.getDay();
     this.checkCurentDay();
+    //this.getEventsForDay(date);
   },
 };
 </script>

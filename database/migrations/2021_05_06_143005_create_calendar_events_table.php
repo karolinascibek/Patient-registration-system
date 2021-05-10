@@ -17,10 +17,14 @@ class CreateCalendarEventsTable extends Migration
             $table->id();
             $table->unsignedBigInteger("calendar_id");
             $table->unsignedBigInteger("user_id");
+
             $table->foreign("calendar_id")->references("id")->on("calendars")->onDelete('cascade');
             $table->foreign("user_id")->references("id")->on("users");
+
             $table->string('contents');
-            $table->date('data');
+            $table->date('date');
+            $table->time("time_start");
+            $table->time("time_end");
             $table->timestamps();
         });
     }

@@ -2148,6 +2148,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../axios */ "./resources/js/vue/axios.js");
+/* harmony import */ var _errors_ErrorInput__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../errors/ErrorInput */ "./resources/js/vue/components/errors/ErrorInput.vue");
 //
 //
 //
@@ -2212,8 +2214,119 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  name: "calendar-component"
+  name: "calendar-component",
+  components: {
+    ErrorInput: _errors_ErrorInput__WEBPACK_IMPORTED_MODULE_1__.default
+  },
+  data: function data() {
+    return {
+      status: false,
+      form: {
+        contents: "",
+        day: "",
+        month: "",
+        year: "",
+        hour_start: "",
+        minutes_start: "",
+        hour_end: "",
+        minutes_end: ""
+      },
+      errors: null
+    };
+  },
+  methods: {
+    reloadEvents: function reloadEvents() {
+      console.log("add Event");
+
+      if (this.status == false) {
+        this.status = true;
+      } else {
+        this.status = false;
+      }
+
+      this.$emit("clicked", this.status);
+    },
+    setEmptyValue: function setEmptyValue() {
+      this.form = {};
+    },
+    addEvent: function addEvent() {
+      var _this = this;
+
+      axios.post(_axios__WEBPACK_IMPORTED_MODULE_0__.default + "api/calendar/" + this.$route.params.id + "/event/create", this.form).then(function (res) {
+        _this.errors = res.data.errors;
+
+        if (_this.errors) {
+          _this.form = res.data.form;
+        } else {
+          _this.setEmptyValue();
+        }
+
+        _this.reloadEvents();
+      })["catch"](function (err) {
+        console.log(err);
+      });
+    }
+  }
 });
 
 /***/ }),
@@ -2231,12 +2344,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _CalendarNav__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CalendarNav */ "./resources/js/vue/components/calendar/CalendarNav.vue");
 /* harmony import */ var _CalendarContainer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CalendarContainer */ "./resources/js/vue/components/calendar/CalendarContainer.vue");
+/* harmony import */ var _axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../axios */ "./resources/js/vue/axios.js");
 //
 //
 //
 //
 //
 //
+//
+//
+//
+//
+
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -2244,6 +2363,52 @@ __webpack_require__.r(__webpack_exports__);
   components: {
     CalendarNav: _CalendarNav__WEBPACK_IMPORTED_MODULE_0__.default,
     CalendarContainer: _CalendarContainer__WEBPACK_IMPORTED_MODULE_1__.default
+  },
+  props: ["isAddEvent"],
+  data: function data() {
+    return {
+      currentDate: null,
+      events: []
+    };
+  },
+  methods: {
+    setCurrentDate: function setCurrentDate(value) {
+      this.currentDate = value;
+      console.log("ser curretn date +++++++");
+      this.getEvents(this.currentDate);
+    },
+    setDay: function setDay(date, value) {
+      return new Date(date.getFullYear(), date.getMonth() + 1, date.getDate() + value);
+    },
+    setMonth: function setMonth(date, value) {
+      return new Date(date.getFullYear(), date.getMonth() + value, date.getDate());
+    },
+    getEvents: function getEvents(date) {
+      var _this = this;
+
+      var data = {
+        date_start: this.formtDate(this.setMonth(date, 1)),
+        date_end: this.formtDate(this.setDay(date, 6))
+      };
+      axios.post(_axios__WEBPACK_IMPORTED_MODULE_2__.default + "api/calendar/" + this.$route.params.id + "/events", data).then(function (res) {
+        console.log("Pobrano Events");
+        _this.events = res.data.events;
+        console.log(_this.events);
+      })["catch"](function (err) {
+        console.log(err);
+      });
+    },
+    formtDate: function formtDate(date) {
+      return date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate();
+    }
+  },
+  updated: function updated() {
+    console.log("CALENDER UPDATE");
+  },
+  created: function created() {
+    this.currentDate = new Date(Date.now());
+    console.log("CREATED CALENDAR === " + this.currentDate);
+    this.getEvents(this.currentDate);
   }
 });
 
@@ -2261,17 +2426,49 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _WeekDay__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./WeekDay */ "./resources/js/vue/components/calendar/WeekDay.vue");
+/* harmony import */ var _axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../axios */ "./resources/js/vue/axios.js");
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
 //
 //
 
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "calendar-component",
   components: {
     WeekDay: _WeekDay__WEBPACK_IMPORTED_MODULE_0__.default
-  }
+  },
+  props: ["currentDate", "isAddEvent", 'events'],
+  data: function data() {
+    return {
+      date: this.currentDate
+    };
+  },
+  methods: {
+    setDate: function setDate(date, value) {
+      var newDate = this.addDay(date, value);
+      return newDate;
+    },
+    addDay: function addDay(date, value) {
+      var d = new Date(date.getFullYear(), date.getMonth(), date.getDate() + value);
+      return d;
+    }
+  },
+  updated: function updated() {
+    console.log("odebrane 2 Calendar container" + this.date);
+    console.log(" updated " + this.date);
+  },
+  created: function created() {}
 });
 
 /***/ }),
@@ -2294,8 +2491,45 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  name: "calendar-component"
+  name: "calendar-component",
+  data: function data() {
+    return {
+      currentDate: null,
+      months: ["Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec", "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"]
+    };
+  },
+  methods: {
+    setMonth: function setMonth(index) {
+      return this.months[index];
+    },
+    setDay: function setDay(newDay) {
+      var day = newDay;
+      var month = this.currentDate.getMonth();
+      var year = this.currentDate.getFullYear();
+      this.currentDate = new Date(year, month, day);
+    },
+    sendFromNavToCalendar: function sendFromNavToCalendar(event) {
+      this.$emit("clicked", this.currentDate);
+    },
+    previouslyWeek: function previouslyWeek(event) {
+      var day = this.currentDate.getDate() - 7;
+      this.setDay(day);
+      this.sendFromNavToCalendar();
+    },
+    nextWeek: function nextWeek(event) {
+      var day = this.currentDate.getDate() + 7;
+      this.setDay(day);
+      this.sendFromNavToCalendar();
+    }
+  },
+  created: function created() {
+    this.currentDate = new Date(Date.now());
+  }
 });
 
 /***/ }),
@@ -2317,8 +2551,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  name: "event-calendar"
+  name: "event-calendar",
+  props: ["currentDate", 'event']
 });
 
 /***/ }),
@@ -2555,11 +2791,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _EventCalendar__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./EventCalendar */ "./resources/js/vue/components/calendar/EventCalendar.vue");
-//
-//
-//
-//
-//
+/* harmony import */ var _axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../axios */ "./resources/js/vue/axios.js");
 //
 //
 //
@@ -2574,10 +2806,84 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "week-day",
   components: {
     EventCalendar: _EventCalendar__WEBPACK_IMPORTED_MODULE_0__.default
+  },
+  props: ["index", "currentDate", "isAddEvent", "events"],
+  data: function data() {
+    return {
+      weekday: null,
+      date: this.currentDate,
+      reloadEvent: this.isAddEvent,
+      currentWeekDay: null,
+      iscurrentDay: false,
+      weekdays: ["Nd", "Pon", "Wt", "Sr", "Cz", "Pt", "So"]
+    };
+  },
+  methods: {
+    isSentEvents: function isSentEvents(event) {
+      var newDate = new Date(event.date);
+      newDate = this.getDate(newDate);
+      var c_date = this.getDate(this.currentDate);
+
+      if (newDate.year == c_date.year && newDate.month == c_date.month && newDate.day == c_date.day) {
+        return true;
+      }
+
+      return false;
+    },
+    setDate: function setDate(date, value) {
+      var newDate = this.addDay(date, value);
+      return newDate;
+    },
+    addDay: function addDay(date, value) {
+      var d = new Date(date.getFullYear(), date.getMonth(), date.getDate() + value);
+      return d;
+    },
+    setWeekDay: function setWeekDay(index) {
+      return this.weekdays[index];
+    },
+    getDate: function getDate(date) {
+      var y = date.getFullYear();
+      var m = date.getMonth();
+      var d = date.getDate();
+      return {
+        year: y,
+        month: m,
+        day: d
+      };
+    },
+    checkCurentDay: function checkCurentDay() {
+      var d = this.getDate(this.currentDate);
+      var now = new Date(Date.now());
+      var dn = this.getDate(now);
+      console.log("nasz dzień" + this.weekday + " == " + this.index);
+
+      if (this.index == 0 && d.year == dn.year && d.month == dn.month && d.day == dn.day) {
+        this.iscurrentDay = true;
+      } else {
+        this.iscurrentDay = false;
+      }
+    },
+    setCurrentDate: function setCurrentDate(newDate) {
+      this.date = newDate;
+    }
+  },
+  updated: function updated() {
+    this.date = this.currentDate;
+    this.checkCurentDay(); //let newdate = this.addDay(this.currentDate, this.index);
+    //this.getEventsForDay(newdate);
+
+    console.log(this.isAddEvent + "metod update new Add ewent");
+  },
+  created: function created() {
+    this.setCurrentDate(this.currentDate);
+    this.weekday = this.currentDate.getDay();
+    this.currentWeekDay = this.date.getDay();
+    this.checkCurentDay(); //this.getEventsForDay(date);
   }
 });
 
@@ -2733,7 +3039,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 
 
@@ -2750,10 +3055,16 @@ __webpack_require__.r(__webpack_exports__);
     return {
       calendar: [],
       owner: [],
-      eventsCalendar: ['hellow']
+      eventsCalendar: ["hellow"],
+      isAddEvent: false
     };
   },
   methods: {
+    getMessage: function getMessage(value) {
+      console.log("Odebraba 1 CAlendar Page");
+      this.isAddEvent = value;
+      console.log(value);
+    },
     getCalendar: function getCalendar() {
       var _this = this;
 
@@ -2765,6 +3076,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     }
   },
+  updated: function updated() {},
   created: function created() {
     this.getCalendar();
   }
@@ -23273,15 +23585,17 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", [
-      _c("form", [
+  return _c("div", [
+    _c(
+      "form",
+      {
+        on: {
+          submit: function($event) {
+            $event.preventDefault()
+          }
+        }
+      },
+      [
         _c("div", { staticClass: "form-row" }, [
           _c("div", { staticClass: "col-md-12 mb-3" }, [
             _c("label", { attrs: { for: "validationDefault01" } }, [
@@ -23289,16 +23603,37 @@ var staticRenderFns = [
             ]),
             _vm._v(" "),
             _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.form.contents,
+                  expression: "form.contents"
+                }
+              ],
               staticClass: "form-control",
               attrs: {
                 type: "text",
                 id: "validationDefault01",
                 value: "Mark",
-                required: ""
+                name: "contains"
+              },
+              domProps: { value: _vm.form.contents },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.form, "contents", $event.target.value)
+                }
               }
             })
           ])
         ]),
+        _vm._v(" "),
+        _vm.errors
+          ? _c("ErrorInput", { attrs: { message: _vm.errors.contents[0] } })
+          : _vm._e(),
         _vm._v(" "),
         _c("div", { staticClass: "form-row" }, [
           _c("div", { staticClass: "col-md-2 mb-3" }, [
@@ -23307,8 +23642,25 @@ var staticRenderFns = [
             ]),
             _vm._v(" "),
             _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.form.day,
+                  expression: "form.day"
+                }
+              ],
               staticClass: "form-control",
-              attrs: { type: "number", id: "validationDefault03", required: "" }
+              attrs: { type: "number", id: "validationDefault03", name: "day" },
+              domProps: { value: _vm.form.day },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.form, "day", $event.target.value)
+                }
+              }
             })
           ]),
           _vm._v(" "),
@@ -23318,8 +23670,29 @@ var staticRenderFns = [
             ]),
             _vm._v(" "),
             _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.form.month,
+                  expression: "form.month"
+                }
+              ],
               staticClass: "form-control",
-              attrs: { type: "number", id: "validationDefault03", required: "" }
+              attrs: {
+                type: "number",
+                id: "validationDefault03",
+                name: "month"
+              },
+              domProps: { value: _vm.form.month },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.form, "month", $event.target.value)
+                }
+              }
             })
           ]),
           _vm._v(" "),
@@ -23329,31 +23702,46 @@ var staticRenderFns = [
             ]),
             _vm._v(" "),
             _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.form.year,
+                  expression: "form.year"
+                }
+              ],
               staticClass: "form-control",
-              attrs: { type: "number", id: "validationDefault03", required: "" }
+              attrs: {
+                type: "number",
+                id: "validationDefault03",
+                name: "year"
+              },
+              domProps: { value: _vm.form.year },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.form, "year", $event.target.value)
+                }
+              }
             })
           ])
         ]),
         _vm._v(" "),
-        _c(
-          "div",
-          {
-            staticClass: "form-row justify-content-between border-bottom py-2"
-          },
-          [
-            _c("div", { staticClass: "col-3" }, [
-              _c("label", { attrs: { for: "validationDefault03" } }, [
-                _vm._v("Godzina rozpoczęcia")
-              ])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "col-3 text-right" }, [
-              _c("label", { attrs: { for: "validationDefault03" } }, [
-                _vm._v("Godzina zakończenia")
-              ])
-            ])
-          ]
-        ),
+        _vm.errors
+          ? _c("ErrorInput", { attrs: { message: _vm.errors.day[0] } })
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.errors
+          ? _c("ErrorInput", { attrs: { message: _vm.errors.month[0] } })
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.errors
+          ? _c("ErrorInput", { attrs: { message: _vm.errors.year[0] } })
+          : _vm._e(),
+        _vm._v(" "),
+        _vm._m(0),
         _vm._v(" "),
         _c("div", { staticClass: "form-row pt-2" }, [
           _c("div", { staticClass: "col-md-2 mb-3" }, [
@@ -23362,8 +23750,29 @@ var staticRenderFns = [
             ]),
             _vm._v(" "),
             _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.form.hour_start,
+                  expression: "form.hour_start"
+                }
+              ],
               staticClass: "form-control",
-              attrs: { type: "number", id: "validationDefault03", required: "" }
+              attrs: {
+                type: "number",
+                id: "validationDefault03",
+                name: "hour_start"
+              },
+              domProps: { value: _vm.form.hour_start },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.form, "hour_start", $event.target.value)
+                }
+              }
             })
           ]),
           _vm._v(" "),
@@ -23373,8 +23782,29 @@ var staticRenderFns = [
             ]),
             _vm._v(" "),
             _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.form.minutes_start,
+                  expression: "form.minutes_start"
+                }
+              ],
               staticClass: "form-control",
-              attrs: { type: "number", id: "validationDefault03", required: "" }
+              attrs: {
+                type: "number",
+                id: "validationDefault03",
+                name: "minutes_start"
+              },
+              domProps: { value: _vm.form.minutes_start },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.form, "minutes_start", $event.target.value)
+                }
+              }
             })
           ]),
           _vm._v(" "),
@@ -23388,8 +23818,29 @@ var staticRenderFns = [
             ]),
             _vm._v(" "),
             _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.form.hour_end,
+                  expression: "form.hour_end"
+                }
+              ],
               staticClass: "form-control",
-              attrs: { type: "number", id: "validationDefault03", required: "" }
+              attrs: {
+                type: "number",
+                id: "validationDefault03",
+                name: "hour_end"
+              },
+              domProps: { value: _vm.form.hour_end },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.form, "hour_end", $event.target.value)
+                }
+              }
             })
           ]),
           _vm._v(" "),
@@ -23399,19 +23850,87 @@ var staticRenderFns = [
             ]),
             _vm._v(" "),
             _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.form.minutes_end,
+                  expression: "form.minutes_end"
+                }
+              ],
               staticClass: "form-control",
-              attrs: { type: "number", id: "validationDefault03", required: "" }
+              attrs: {
+                type: "number",
+                id: "validationDefault03",
+                name: "minutes_end"
+              },
+              domProps: { value: _vm.form.minutes_end },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.form, "minutes_end", $event.target.value)
+                }
+              }
             })
           ])
         ]),
         _vm._v(" "),
+        _vm.errors
+          ? _c("ErrorInput", { attrs: { message: _vm.errors.hour_start[0] } })
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.errors
+          ? _c("ErrorInput", {
+              attrs: { message: _vm.errors.minutes_start[0] }
+            })
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.errors
+          ? _c("ErrorInput", { attrs: { message: _vm.errors.hour_end[0] } })
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.errors
+          ? _c("ErrorInput", { attrs: { message: _vm.errors.minutes_end[0] } })
+          : _vm._e(),
+        _vm._v(" "),
         _c(
           "button",
-          { staticClass: "btn btn-primary", attrs: { type: "submit" } },
+          {
+            staticClass: "btn btn-primary",
+            attrs: { type: "submit" },
+            on: { click: _vm.addEvent }
+          },
           [_vm._v("Dodaj")]
         )
-      ])
-    ])
+      ],
+      1
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      { staticClass: "form-row justify-content-between border-bottom py-2" },
+      [
+        _c("div", { staticClass: "col-3" }, [
+          _c("label", { attrs: { for: "validationDefault03" } }, [
+            _vm._v("Godzina rozpoczęcia")
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "col-3 text-right" }, [
+          _c("label", { attrs: { for: "validationDefault03" } }, [
+            _vm._v("Godzina zakończenia")
+          ])
+        ])
+      ]
+    )
   }
 ]
 render._withStripped = true
@@ -23439,7 +23958,17 @@ var render = function() {
   return _c(
     "div",
     { staticClass: "bg-light py-3" },
-    [_c("CalendarNav"), _vm._v(" "), _c("CalendarContainer")],
+    [
+      _c("CalendarNav", { on: { clicked: _vm.setCurrentDate } }),
+      _vm._v(" "),
+      _c("CalendarContainer", {
+        attrs: {
+          currentDate: _vm.currentDate,
+          isAddEvent: _vm.isAddEvent,
+          events: _vm.events
+        }
+      })
+    ],
     1
   )
 }
@@ -23469,10 +23998,26 @@ var render = function() {
   return _c(
     "div",
     { staticClass: "d-flex justify-content-around bg-light py-3" },
-    _vm._l(5, function(i) {
-      return _c("WeekDay", { key: i })
+    _vm._l(7, function(weekDay, index) {
+      return _c(
+        "div",
+        { key: index },
+        [
+          _c("WeekDay", {
+            attrs: {
+              currentDate: _vm.setDate(_vm.currentDate, index),
+              index: index,
+              isAddEvent: _vm.isAddEvent,
+              events: _vm.events
+            }
+          }),
+          _vm._v(" "),
+          _c("div", [_vm._v(_vm._s(_vm.isAddEvent) + " + calendar Container")])
+        ],
+        1
+      )
     }),
-    1
+    0
   )
 }
 var staticRenderFns = []
@@ -23498,22 +24043,31 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c("div", { staticClass: "d-flex justify-content-around py-3" }, [
+    _c(
+      "button",
+      { staticClass: "btn btn-primary", on: { click: _vm.previouslyWeek } },
+      [_vm._v("prev")]
+    ),
+    _vm._v(" "),
+    _c("h3", [
+      _vm._v(
+        "\n    " +
+          _vm._s(_vm.setMonth(_vm.currentDate.getMonth())) +
+          " " +
+          _vm._s(_vm.currentDate.getFullYear()) +
+          "\n  "
+      )
+    ]),
+    _vm._v(" "),
+    _c(
+      "button",
+      { staticClass: "btn btn-primary", on: { click: _vm.nextWeek } },
+      [_vm._v("next")]
+    )
+  ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "d-flex justify-content-around py-3" }, [
-      _c("button", { staticClass: "btn btn-primary" }, [_vm._v("prev")]),
-      _vm._v(" "),
-      _c("h3", [_vm._v("Styczeń 2021")]),
-      _vm._v(" "),
-      _c("button", { staticClass: "btn btn-primary" }, [_vm._v("next")])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -23536,20 +24090,15 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c("div", { staticClass: "border rounded my-1 p-2 bg-white" }, [
+    _c("div", [
+      _vm._v(_vm._s(_vm.event.time_start) + " - " + _vm._s(_vm.event.time_end))
+    ]),
+    _vm._v(" "),
+    _c("div", [_vm._v(_vm._s(_vm.event.contents))])
+  ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "border rounded my-1 p-2 bg-white" }, [
-      _c("div", [_vm._v("0:0")]),
-      _vm._v(" "),
-      _c("div", [_vm._v("asjakdjsaklj dlksjlksjlkajkl")])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -23918,43 +24467,39 @@ var render = function() {
     "div",
     {},
     [
-      _vm._m(0),
+      _c(
+        "div",
+        {
+          class: { active: _vm.iscurrentDay, "text-success": _vm.iscurrentDay }
+        },
+        [
+          _c("h4", { staticClass: "px-0" }, [
+            _vm._v(_vm._s(_vm.currentDate.getDate()))
+          ]),
+          _vm._v(" "),
+          _c("h5", [_vm._v(_vm._s(_vm.setWeekDay(_vm.index)))])
+        ]
+      ),
       _vm._v(" "),
-      _c("EventCalendar"),
-      _vm._v(" "),
-      _c("EventCalendar"),
-      _vm._v(" "),
-      _c("EventCalendar"),
-      _vm._v(" "),
-      _c("EventCalendar"),
-      _vm._v(" "),
-      _c("EventCalendar"),
-      _vm._v(" "),
-      _c("EventCalendar"),
-      _vm._v(" "),
-      _c("EventCalendar"),
-      _vm._v(" "),
-      _c("EventCalendar"),
-      _vm._v(" "),
-      _c("EventCalendar"),
-      _vm._v(" "),
-      _c("EventCalendar")
+      _vm._l(_vm.events, function(event, i) {
+        return _c(
+          "div",
+          { key: i },
+          [
+            _vm.isSentEvents(event)
+              ? _c("EventCalendar", {
+                  attrs: { currentDate: _vm.currentDate, event: event }
+                })
+              : _vm._e()
+          ],
+          1
+        )
+      })
     ],
-    1
+    2
   )
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", [
-      _c("h5", [_vm._v("Pon")]),
-      _vm._v(" "),
-      _c("h5", [_vm._v("12-01-2021")])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -24129,13 +24674,13 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    { staticClass: "py-2 px-4 " },
+    { staticClass: "py-2 px-4" },
     [
       _c("Header", { attrs: { calendar: _vm.calendar, owner: _vm.owner } }),
       _vm._v(" "),
-      _c("AddEvent"),
+      _c("AddEvent", { on: { clicked: _vm.getMessage } }),
       _vm._v(" "),
-      _c("Calendar")
+      _c("Calendar", { attrs: { isAddEvent: _vm.isAddEvent } })
     ],
     1
   )
