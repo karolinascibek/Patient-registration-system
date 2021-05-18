@@ -1,12 +1,18 @@
 <template>
-  <div class="d-flex justify-content-around py-3">
-    <button @click="previouslyWeek" class="btn btn-primary">prev</button>
+  <div class="row justify-content-center ">
+    <div class="col-9">
+      <div class="d-flex justify-content-around py-3">
+        <button @click="previouslyWeek" class="btn btn-primary rounded-circle btn-lg">
+          <i class="fas fa-arrow-left"></i>
+        </button>
 
-    <h3>
-      {{ setMonth(currentDate.getMonth()) }} {{ currentDate.getFullYear() }}
-    </h3>
+        <h3>{{ setMonth(currentDate.getMonth()) }} {{ currentDate.getFullYear() }}</h3>
 
-    <button @click="nextWeek" class="btn btn-primary">next</button>
+        <button @click="nextWeek" class="btn btn-primary rounded-circle btn-lg">
+          <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 <script>

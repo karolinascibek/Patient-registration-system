@@ -2,7 +2,7 @@
   <div>
     <h4>Dołącz do kalendarza</h4>
 
-    <form @submit.prevent="addCalendar">
+    <form  class="form-cal" @submit.prevent="addCalendar">
       <ErrorInput v-if="error" :message="error"/>
       <div class="form-row">
         <div class="form-group col-md-4">
@@ -63,7 +63,7 @@ export default {
 </script>
 
 <style>
-form {
+.form-cal {
   margin-bottom: 4em;
   margin-top: 1em;
   padding: 20px;

@@ -2,7 +2,7 @@
   <div>
     <h4>Stwórz nowy</h4>
 
-    <form @submit.prevent="onSubmit">
+    <form class="form-cal" @submit.prevent="onSubmit">
         <ErrorInput v-if="errors" :message="errors.name[0]"/>
       <div class="form-row">
         <div class="form-group col-md-6">
@@ -62,7 +62,6 @@ form {
   margin-bottom: 4em;
   margin-top: 1em;
   padding: 20px;
-  border-top: 1px solid rgb(204, 203, 203);
 }
 
 h4 {

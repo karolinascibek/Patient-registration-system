@@ -1,5 +1,5 @@
 <template>
-  <div class="border-bottom">
+  <div class="border-bottom bg-white">
     <ul class="nav justify-content-end py-3">
       <!-- <li class="border-right nav-item ">
                 <router-link :to="{name:'home'}" class="nav-link btn btn-link">Home</router-link>

@@ -1,10 +1,12 @@
 <template>
-  <div class="bg-light py-3">
+  <div class="bg-light py-4 rounded-lg shadow-sm border-bottom border-top">
     <CalendarNav @clicked="setCurrentDate" />
     <CalendarContainer
       :currentDate="currentDate"
       :isAddEvent="isAddEvent"
       :events="events"
+      @updateEvent="updateEvent"
+      @deletedEvent="deletedEvent"
     />
   </div>
 </template>
@@ -24,12 +26,21 @@ export default {
     return {
       currentDate: null,
       events: [],
+
     };
   },
   methods: {
+    deletedEvent(value) {
+        console.log("pobrno po usunieciu")
+      this.getEvents(this.currentDate);
+    },
+    updateEvent(value) {
+    //   console.log("Calendar Component xD -------------------------------");
+      this.$emit("updateEvent", value);
+    },
     setCurrentDate(value) {
       this.currentDate = value;
-      console.log("ser curretn date +++++++")
+      console.log("ser curretn date +++++++");
       this.getEvents(this.currentDate);
     },
     setDay(date, value) {
@@ -59,11 +70,11 @@ export default {
     },
   },
   updated() {
-    console.log("CALENDER UPDATE");
+    // console.log("CALENDER UPDATE");
   },
   created() {
     this.currentDate = new Date(Date.now());
-    console.log("CREATED CALENDAR === "+this.currentDate)
+    // console.log("CREATED CALENDAR === "+this.currentDate)
     this.getEvents(this.currentDate);
   },
 };

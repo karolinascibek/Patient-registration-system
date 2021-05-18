@@ -32,6 +32,9 @@ class AuthController extends Controller
            ],404);
         }
 
+        $user->is_login = true;
+        $user->save();
+
         return response()->json([
             'token'=>$user->createToken($request->device_name)->plainTextToken,
             'user' =>$user,
@@ -40,6 +43,10 @@ class AuthController extends Controller
     }
 
     public function logout(Request $request){
+        $user = $request->user();
+        $user->is_login = false;
+        $user->save();
+
         $request->user()->currentAccessToken()->delete();
         return response()->json([
             'msg' => "Log out",

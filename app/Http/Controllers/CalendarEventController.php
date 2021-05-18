@@ -17,13 +17,8 @@ class CalendarEventController extends Controller
 
     }
     public function showEventsForWeek(Request $request, $id){
-        $date_start = Carbon::createFromFormat("Y-m-d",$request->date_start)->format("Y-m-d");
-        $date_end = Carbon::createFromFormat("Y-m-d",$request->date_end)->format("Y-m-d");
-        $events = CalendarEvent::where('calendar_id','=',$id)
-                                ->whereBetween('date',[$request->date_start, $request->date_end])
-                                ->orderBy('date')
-                                ->orderBy('time_start')
-                                ->get();
+        $events = CalendarEvent::getEventsForDate($id, $request->date_start, $request->date_end);
+
         return response()->json([
             'msg'=>"Wydarzenia dla danego dnia pobrano",
             'events'=> $events
@@ -39,8 +34,7 @@ class CalendarEventController extends Controller
         ]);
     }
 
-    public function create(Request $request, $id)
-    {
+    public function validEvent(Request $request){
         $rules =[
             'contents'=>"required|max:255",
             'day'=>"required|numeric",
@@ -56,7 +50,12 @@ class CalendarEventController extends Controller
             'numeric'=>'Podano niepoprawno wartosc',
         ];
 
-        $validator= Validator::make($request->all(),$rules, $messages);
+        return Validator::make($request->all(),$rules, $messages);
+    }
+
+    public function create(Request $request, $id)
+    {
+        $validator = $this->validEvent($request);
         if($validator->fails()){
             return response()->json([
                 "errors"=>$validator->errors(),
@@ -65,7 +64,13 @@ class CalendarEventController extends Controller
         }
 
         $calendar = Calendar::find($id);
+
+        // $date = $request->year."-".$request->month."-".$request->day;
+        // $time_start = $request->hour_start.":".$request->minutes_start;
+        // $time_end = $request->hour_end.":".$request->minutes_end;
+
         $event = new CalendarEvent();
+
         $event->create([
             'contents'=>$request->contents,
             'user_id'=>$request->user()->id,
@@ -75,7 +80,7 @@ class CalendarEventController extends Controller
             'time_end'=>$request->hour_end.":".$request->minutes_end,
         ]);
         return response()->json([
-            'msg'=>"Wydarzenie zostalo dodane"
+            'msg'=>"Wydarzenie zostalo dodane",
         ]);
     }
 
@@ -119,19 +124,35 @@ class CalendarEventController extends Controller
      * @param  \App\Models\CalendarEvent  $calendarEvent
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, CalendarEvent $calendarEvent)
+    public function update(Request $request)
     {
-        //
+        $validator = $this->validEvent($request);
+        if($validator->fails()){
+            return response()->json([
+                "errors"=>$validator->errors(),
+                "form"=>$request->all()
+            ]);
+        }
+
+        $event = CalendarEvent::find($request->id);
+        $event->update([
+            'contents'=>$request->contents,
+            'date'=>$request->year."-".$request->month."-".$request->day,
+            'time_start'=>$request->hour_start.":".$request->minutes_start,
+            'time_end'=>$request->hour_end.":".$request->minutes_end,
+        ]);
+        return response()->json([
+            'msg'=>"Wydarzenie zostalo dodane"
+        ]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\CalendarEvent  $calendarEvent
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(CalendarEvent $calendarEvent)
+    public function destroy($id)
     {
-        //
+        $event = CalendarEvent::find($id);
+        $event->delete();
+
+        return response()->json([
+            'msg'=>$event,
+        ]);
     }
 }

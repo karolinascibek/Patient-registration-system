@@ -6,8 +6,10 @@
         :index="index"
         :isAddEvent="isAddEvent"
         :events="events"
+        @updateEvent="updateEvent"
+        @deletedEvent="deletedEvent"
       />
-      <div>{{ isAddEvent }} + calendar Container</div>
+      <div class="text-light">{{ isAddEvent }} + calendar Container</div>
     </div>
   </div>
 </template>
@@ -21,13 +23,20 @@ export default {
   components: {
     WeekDay,
   },
-  props: ["currentDate", "isAddEvent",'events'],
+  props: ["currentDate", "isAddEvent", "events"],
   data() {
     return {
       date: this.currentDate,
     };
   },
   methods: {
+    deletedEvent(value) {
+      this.$emit("deletedEvent", value);
+    },
+    updateEvent(value) {
+      //   console.log("Calendar Container xD -------------------------------");
+      this.$emit("updateEvent", value);
+    },
     setDate(date, value) {
       let newDate = this.addDay(date, value);
       return newDate;
@@ -36,14 +45,11 @@ export default {
       let d = new Date(date.getFullYear(), date.getMonth(), date.getDate() + value);
       return d;
     },
-
   },
   updated() {
-    console.log("odebrane 2 Calendar container" + this.date);
-
-    console.log(" updated " + this.date);
+    // console.log("odebrane 2 Calendar container" + this.date);
+    // console.log(" updated " + this.date);
   },
-  created() {
-  },
+  created() {},
 };
 </script>

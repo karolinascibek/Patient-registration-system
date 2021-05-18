@@ -1,12 +1,25 @@
 <template>
   <div class="">
-    <div v-bind:class="{ active: iscurrentDay, 'text-success': iscurrentDay }">
-      <h4  class="px-0">{{ currentDate.getDate() }}</h4>
-      <h5>{{ setWeekDay(index) }}</h5>
+    <div
+      class="border-bottom font-weight-bold mb-3"
+      v-bind:class="{
+        active: iscurrentDay,
+        'text-danger  border-danger': iscurrentDay,
+        'border-dark': !iscurrentDay,
+      }"
+    >
+      <h4 class="px-0">{{ currentDate.getDate() }}</h4>
+      <h5>{{ setWeekDay(currentDate.getDay()) }}</h5>
     </div>
 
     <div v-for="(event, i) in events" :key="i">
-      <EventCalendar v-if="isSentEvents(event)" :currentDate="currentDate" :event="event" />
+      <EventCalendar
+        v-if="isSentEvents(event)"
+        :currentDate="currentDate"
+        :event="event"
+        @updateEvent="updateEvent"
+        @deletedEvent="deletedEvent"
+      />
     </div>
   </div>
 </template>
@@ -34,14 +47,25 @@ export default {
     };
   },
   methods: {
-    isSentEvents(event){
-        let newDate = new Date(event.date);
-        newDate = this.getDate(newDate);
-        let c_date = this.getDate(this.currentDate);
-        if(newDate.year == c_date.year && newDate.month == c_date.month && newDate.day == c_date.day){
-            return true;
-        }
-        return false;
+    deletedEvent(value) {
+      this.$emit("deletedEvent", value);
+    },
+    updateEvent(value) {
+      //  console.log("Week days xD -------------------------------");
+      this.$emit("updateEvent", value);
+    },
+    isSentEvents(event) {
+      let newDate = new Date(event.date);
+      newDate = this.getDate(newDate);
+      let c_date = this.getDate(this.currentDate);
+      if (
+        newDate.year == c_date.year &&
+        newDate.month == c_date.month &&
+        newDate.day == c_date.day
+      ) {
+        return true;
+      }
+      return false;
     },
     setDate(date, value) {
       let newDate = this.addDay(date, value);
@@ -65,7 +89,7 @@ export default {
       let d = this.getDate(this.currentDate);
       let now = new Date(Date.now());
       let dn = this.getDate(now);
-      console.log("nasz dzień" + this.weekday +" == "+this.index);
+      //   console.log("nasz dzień" + this.weekday +" == "+this.index);
       if (
         this.index == 0 &&
         d.year == dn.year &&
@@ -82,11 +106,11 @@ export default {
     },
   },
   updated() {
-    this.date = this.currentDate
+    this.date = this.currentDate;
     this.checkCurentDay();
     //let newdate = this.addDay(this.currentDate, this.index);
     //this.getEventsForDay(newdate);
-    console.log(this.isAddEvent + "metod update new Add ewent");
+    // console.log(this.isAddEvent + "metod update new Add ewent");
   },
   created() {
     this.setCurrentDate(this.currentDate);
@@ -97,3 +121,9 @@ export default {
   },
 };
 </script>
+
+<style>
+.font-weight-bold {
+  font-weight: 900;
+}
+</style>
