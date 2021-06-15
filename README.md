@@ -8,9 +8,9 @@
 * Bootstrap 4.6.0
 * uwmap/xampp
 
-Otworz terminal w głównym folderze aplikacji :
 ## Instalacja 
 - pobieramy projekt z https://github.com/karolinascibek/php-vue-app-calendar.git
+- otworz terminal w głównym folderze aplikacji a następnie wprowadź komendy:
 ``` 
 $ git clone https://github.com/karolinascibek/php-vue-app-calendar.git
 $ composer update
@@ -31,6 +31,7 @@ $ php artisan migrate
 $ npm run watch 
 $ php artisan serve
 ```
+link do strony głownej http://127.0.0.1:8000
 
 
 
