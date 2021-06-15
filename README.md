@@ -17,9 +17,16 @@ $ composer update
 $ npm install
 ```
 
-## baza danych
-- w pliku ```.env``` ustaw baze danych, jeżeli nie ma takigo pliku utwórz go 
+## konfiguracja
+- jeżeli nie ma pliku ```.env```, utwórz go 
   kopjując plik ```.env.example``` i zmieniając nazwe na ```.env```
+- w pliku ```.env``` 
+    * ustaw baze danych
+    * wstaw na końcu pliku poniższe zmienne:
+    ```
+    SANCTUM_STATEFUL_DOMAINS=localhost
+    SESSION_DOMAIN = localhost
+    ```
 - nastepnie w konsoli wprowadz nastepujące komendy.
 ```
 $ php artisan key:generate 
