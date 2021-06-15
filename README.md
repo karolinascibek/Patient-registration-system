@@ -3,6 +3,7 @@
 ## Technologie 
 * PHP 7.4.7
 * Vue 2x
+* Laravel 8
 * MySQL
 * Bootstrap 4.6.0
 * uwmap/xampp
