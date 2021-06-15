@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Validation\ValidationException;
+use App\Events\ActiveUsers;
 
 class AuthController extends Controller
 {
@@ -35,6 +36,9 @@ class AuthController extends Controller
         $user->is_login = true;
         $user->save();
 
+        // $users = User::findActiveUsers();
+        // event(new ActiveUsers($users));
+
         return response()->json([
             'token'=>$user->createToken($request->device_name)->plainTextToken,
             'user' =>$user,
@@ -48,6 +52,10 @@ class AuthController extends Controller
         $user->save();
 
         $request->user()->currentAccessToken()->delete();
+
+        // $users = User::findActiveUsers();
+        // event(new ActiveUsers($users));
+
         return response()->json([
             'msg' => "Log out",
         ]);

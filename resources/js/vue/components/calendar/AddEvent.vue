@@ -1,6 +1,6 @@
 <template>
   <div
-    class="d-flex justify-content-center bg-light mb-4 border-top border-bottom  rounded-bottom shadow-sm"
+    class="d-flex justify-content-center bg-light mb-4 border-top border-bottom rounded-bottom shadow-sm"
   >
     <form @submit.prevent class="bg-light">
       <div class="form-row">
@@ -143,7 +143,7 @@ export default {
   components: {
     ErrorInput,
   },
-  props: ["currentEvent"],
+  props: ["currentEvent", "currentDate"],
   data() {
     return {
       event: this.currentEvent,
@@ -157,6 +157,15 @@ export default {
     },
   },
   methods: {
+    setDay(date, value) {
+      return new Date(date.getFullYear(), date.getMonth() + 1, date.getDate() + value);
+    },
+    setMonth(date, value) {
+      return new Date(date.getFullYear(), date.getMonth() + value, date.getDate());
+    },
+    formtDate(date) {
+      return date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate();
+    },
     canceledEvent() {
       this.errors = null;
       this.setEmptyEvnet();
@@ -167,11 +176,15 @@ export default {
         this.errors = ["Data zakończenia nie może byc mniejsza od daty rozpoczęcia."];
         return;
       }
+      this.event.date_start = this.formtDate(this.setMonth(this.currentDate, 1));
+      this.event.date_end = this.formtDate(this.setDay(this.currentDate, 6));
+
       axios
-        .post(BASE_URL + "api/event/update", this.event)
+        .post(
+          BASE_URL + "api/calendar/" + this.$route.params.id + "/event/update",
+          this.event
+        )
         .then((res) => {
-          console.log("przesłane dane event update");
-          console.log(res.data);
           this.setErrors(res);
         })
         .catch((err) => {
@@ -215,9 +228,13 @@ export default {
       this.errors = null;
 
       if (!this.checkDate()) {
-        console.log("Data zakończenia nie może byc mniejsza od daty rozpoczęcia.")
+        // console.log("Data zakończenia nie może byc mniejsza od daty rozpoczęcia.");
         return;
       }
+
+      this.event.date_start = this.formtDate(this.setMonth(this.currentDate, 1));
+      this.event.date_end = this.formtDate(this.setDay(this.currentDate, 6));
+
       axios
         .post(BASE_URL + "api/calendar/" + this.$route.params.id + "/event/create", form)
         .then((res) => {
@@ -251,6 +268,9 @@ export default {
   mounted() {
     // console.log("mounted");
   },
-  created() {},
+  created() {
+    // console.log("mounted  -----------------------------");
+    // console.log(this.currentDate);
+  },
 };
 </script>

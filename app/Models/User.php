@@ -59,4 +59,9 @@ class User extends Authenticatable
                         ->where('calendars.user_id',"!=", $this->id);
     }
 
+    public static function findActiveUsers(){
+        return User::where('is_login',true)
+                            ->get();
+    }
+
 }

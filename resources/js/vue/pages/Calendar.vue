@@ -1,17 +1,15 @@
 <template>
   <div class="container-fluid">
-    <div class="row">
+    <div class="row justify-content-center">
       <div class="col-10 py-2 px-4 bg-white">
         <Header :calendar="calendar" :owner="owner" />
         <AddEvent
           @clicked="getMessage"
           :currentEvent="currentEvent"
           @updateEvent="updateEvent"
+          :currentDate="currentDate"
         />
-        <Calendar @updateEvent="updateEvent" :isAddEvent="isAddEvent" />
-      </div>
-      <div class="col-2">
-        <UsersList />
+        <Calendar @updateEvent="updateEvent" :isAddEvent="isAddEvent" @currentDate="getCurrentDate" />
       </div>
     </div>
   </div>
@@ -22,7 +20,6 @@ import BASE_URL from "../axios";
 import Header from "../components/calendar/Header";
 import Calendar from "../components/calendar/Calendar";
 import AddEvent from "../components/calendar/AddEvent";
-import UsersList from "../components/auth/UsersList";
 
 export default {
   name: "calendar",
@@ -31,7 +28,6 @@ export default {
     Header,
     Calendar,
     AddEvent,
-    UsersList,
   },
   data() {
     return {
@@ -39,6 +35,7 @@ export default {
       owner: [],
       eventsCalendar: ["hellow"],
       isAddEvent: false,
+      currentDate: null,
       currentEvent: {
         id: "",
         user_id: "",
@@ -55,6 +52,10 @@ export default {
     };
   },
   methods: {
+    getCurrentDate(value){
+        this.currentDate = value;
+        console.log("CAlendar Page ------ ");
+    },
     updateEvent(value) {
       //   console.log("CAlendar Page ------ ");
       this.currentEvent = value;
@@ -82,6 +83,7 @@ export default {
   },
   created() {
     this.getCalendar();
+    this.currentDate = new Date(Date.now());
   },
 };
 </script>

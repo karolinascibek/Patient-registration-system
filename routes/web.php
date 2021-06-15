@@ -18,3 +18,4 @@ use App\Http\Controllers\PagesController;
 
 
 Route::get('/{any}', [PagesController::class, 'index'] )->where("any", ".*");
+

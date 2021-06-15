@@ -26,21 +26,25 @@ export default {
     return {
       currentDate: null,
       events: [],
-
     };
+  },
+  mounted() {
+    // Echo.channel(`event-added`).listen("EventAdded", (e) => {
+    //   this.events = e.events;
+    //   console.log("event nasłuch ");
+    //   console.log(e);
+    // });
   },
   methods: {
     deletedEvent(value) {
-        console.log("pobrno po usunieciu")
       this.getEvents(this.currentDate);
     },
     updateEvent(value) {
-    //   console.log("Calendar Component xD -------------------------------");
+      //   console.log("Calendar Component xD -------------------------------");
       this.$emit("updateEvent", value);
     },
     setCurrentDate(value) {
       this.currentDate = value;
-      console.log("ser curretn date +++++++");
       this.getEvents(this.currentDate);
     },
     setDay(date, value) {
@@ -48,6 +52,9 @@ export default {
     },
     setMonth(date, value) {
       return new Date(date.getFullYear(), date.getMonth() + value, date.getDate());
+    },
+    formtDate(date) {
+      return date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate();
     },
     getEvents(date) {
       let data = {
@@ -57,16 +64,14 @@ export default {
       axios
         .post(BASE_URL + "api/calendar/" + this.$route.params.id + "/events", data)
         .then((res) => {
-          console.log("Pobrano Events");
+          console.log("Pobrano wydarzenia");
           this.events = res.data.events;
           console.log(this.events);
+          this.$emit("currentDate", this.currentDate);
         })
         .catch((err) => {
           console.log(err);
         });
-    },
-    formtDate(date) {
-      return date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate();
     },
   },
   updated() {

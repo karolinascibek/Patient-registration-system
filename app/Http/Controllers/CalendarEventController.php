@@ -6,6 +6,7 @@ use App\Models\CalendarEvent;
 use App\Models\Calendar;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Events\EventAdded;
 
 use Illuminate\Support\Facades\Validator;
 
@@ -19,6 +20,7 @@ class CalendarEventController extends Controller
     public function showEventsForWeek(Request $request, $id){
         $events = CalendarEvent::getEventsForDate($id, $request->date_start, $request->date_end);
 
+        //event(new EventAdded($events));
         return response()->json([
             'msg'=>"Wydarzenia dla danego dnia pobrano",
             'events'=> $events
@@ -55,7 +57,9 @@ class CalendarEventController extends Controller
 
     public function create(Request $request, $id)
     {
+
         $validator = $this->validEvent($request);
+
         if($validator->fails()){
             return response()->json([
                 "errors"=>$validator->errors(),
@@ -79,6 +83,10 @@ class CalendarEventController extends Controller
             'time_start'=>$request->hour_start.":".$request->minutes_start,
             'time_end'=>$request->hour_end.":".$request->minutes_end,
         ]);
+
+        //$events = CalendarEvent::getEventsForDate($id, $request->date_start, $request->date_end);
+        //event(new EventAdded($events));
+
         return response()->json([
             'msg'=>"Wydarzenie zostalo dodane",
         ]);
@@ -124,7 +132,7 @@ class CalendarEventController extends Controller
      * @param  \App\Models\CalendarEvent  $calendarEvent
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
         $validator = $this->validEvent($request);
         if($validator->fails()){
@@ -141,12 +149,16 @@ class CalendarEventController extends Controller
             'time_start'=>$request->hour_start.":".$request->minutes_start,
             'time_end'=>$request->hour_end.":".$request->minutes_end,
         ]);
+
+        $events = CalendarEvent::getEventsForDate($id, $request->date_start, $request->date_end);
+        //event(new EventAdded($events));
+
         return response()->json([
             'msg'=>"Wydarzenie zostalo dodane"
         ]);
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         $event = CalendarEvent::find($id);
         $event->delete();

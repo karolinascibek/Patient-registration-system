@@ -30,7 +30,8 @@ export default {
         return false;
     },
     deleteEvent(){
-        axios.delete(BASE_URL+"api/event/"+this.event.id+"/delete",{}).then(res=>{
+
+        axios.delete(BASE_URL+"api/event/"+this.event.id+"/delete", {}).then(res=>{
             console.log("Usunięto")
             let deletedEvent = true;
             this.$emit("deletedEvent", deletedEvent);

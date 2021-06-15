@@ -1,15 +1,15 @@
 <template>
-  <div class="border-bottom bg-white">
-    <ul class="nav justify-content-end py-3">
+  <div class="border-bottom bg-white ">
+    <ul class="nav justify-content-end p-0">
       <!-- <li class="border-right nav-item ">
                 <router-link :to="{name:'home'}" class="nav-link btn btn-link">Home</router-link>
             </li> -->
-      <li class="border-right nav-item" v-if="!user">
+      <li class="border-right nav-item p-2" v-if="!user">
         <router-link :to="{ name: 'login' }" class="nav-link btn btn-link"
           >Zaloguj się</router-link
         >
       </li>
-      <li class="nav-item" v-if="!user">
+      <li class="nav-item p-2" v-if="!user">
         <router-link :to="{ name: 'signup' }" class="nav-link btn btn-link"
           >Zarejestruj się</router-link
         >
@@ -17,10 +17,10 @@
       <!-- <li class=" nav-item ">
                 <router-link :to="{name:'home'}" class="nav-link btn btn-link">Check Visit</router-link>
             </li> -->
-      <li class="nav-item" v-if="user">
-        <a v-if="user" class="nav-link btn btn-link text-dark">{{ user.name }} {{ user.email }}</a>
+      <li class="nav-item p-2" v-if="user">
+        <a v-if="user" class="nav-link btn btn-link text-dark"> {{ user.email }}</a>
       </li>
-      <li class="nav-item" v-if="user">
+      <li class="nav-item p-2" v-if="user">
         <a href="javascript:void(0)" @click="handelClick" class="nav-link btn btn-link"
           >Wyloguj</a
         >
@@ -74,6 +74,7 @@ export default {
   border-bottom: 2px solid green;
 }
 .nav-link:focus {
-  border-bottom: 2px solid green;
+  border-bottom: 4px solid green;
+
 }
 </style>

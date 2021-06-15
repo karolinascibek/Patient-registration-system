@@ -8,9 +8,14 @@
       <div class="p-2">
         <div class="bd-highlight p-2 px-4">
           <h3>{{ calendar.name }}</h3>
-          <div class="d-flex flex-row bd-highlight text-center text-info">
-            <h5>usuń</h5>
-            <h5 class="pl-2">edytuj</h5>
+          <div v-if="owner.id == user.id" >
+            <div class="d-flex flex-row bd-highlight text-center text-info">
+              <h5>usuń</h5>
+              <h5 class="pl-2">edytuj</h5>
+            </div>
+            <p class="text-secondary">
+              Kod: {{ calendar.code }}
+            </p>
           </div>
           <p class="text-secondary">created by: {{ owner.name }} {{ owner.last_name }}</p>
         </div>
@@ -22,5 +27,18 @@
 export default {
   name: "header-calendar-page",
   props: ["calendar", "owner"],
+  data() {
+    return {
+      user: null,
+    };
+  },
+  methods: {
+    setUser() {
+      this.user = this.$store.getters.user;
+    },
+  },
+  created() {
+    this.setUser();
+  },
 };
 </script>

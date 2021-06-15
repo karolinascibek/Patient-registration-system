@@ -52,10 +52,16 @@ export default {
                   console.log(err);
               });
         });
-      }
+      },
+    checkAuth(){
+        console.log(this.$store.getters.user)
+        if(this.$store.getters.user){
+            this.$router.push('/dashboard');
+        }
+    }
   },
   created() {
-
+      this.checkAuth();
   },
 
 };

@@ -1,6 +1,6 @@
 <template>
   <div class="row justify-content-center mt-4">
-    <div class="col-4">dfsd</div>
+    <div class="col-4"></div>
   </div>
 </template>
 
